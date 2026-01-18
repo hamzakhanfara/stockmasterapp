@@ -1,0 +1,95 @@
+{
+  "navbar": {
+    "title": "K-Moni",
+    "search": "Search products, shelves...",
+    "createOrder": "Create Order",
+    "language": "Language"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "vendors": "Vendors",
+    "shelves": "Shelves",
+    "products": "Products",
+    "orders": "Orders",
+    "users": "Users"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "totalVendors": "Total Vendors",
+    "totalShelves": "Total Shelves",
+    "totalProducts": "Total Products",
+    "recentOrders": "Recent Orders",
+    "salesTrend": "Sales Trend",
+    "stockStatus": "Stock Status"
+  },
+  "vendor":{
+    "addVendor": "Add Vendor",
+    "addNewVendor": "Add New Vendor",
+    "editVendor": "Edit Vendor",
+    "vendorName": "Vendor Name",
+    "vendorDescription": "Vendor Description",
+    "vendorCreated": "Vendor created successfully",
+    "vendorUpdated": "Vendor updated successfully",
+    "vendorDeleted": "Vendor deleted successfully",
+    "confirmDelete": "Are you sure you want to delete this vendor? This action cannot be undone."
+  },
+  "product": {
+    "addProduct": "Add Product",
+    "addNewProduct": "Add New Product",
+    "editProduct": "Edit Product",
+    "productName": "Product Name",
+    "productDescription": "Product Description",
+    "productPrice": "Product Price",
+    "productStock": "Product Stock",
+    "productCreated": "Product created successfully",
+    "productUpdated": "Product updated successfully",
+    "productDeleted": "Product deleted successfully",
+    "confirmDelete": "Are you sure you want to delete this product? This action cannot be undone.",
+    "productsList": "Products List",
+    "topSellingProducts": "Top Selling Products",
+        "status": {
+        "available": "Available",
+        "lowStock": "Low Stock",
+        "outOfStock": "Out of Stock"
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "settings": "Settings",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "noData": "No data available",
+    "create": "Create",
+    "price": "Price",
+    "stock": "Stock",
+    "initialStock": "Initial Stock",
+    "lowStockAt": "Low Stock At",
+    "outOfStock": "Out of Stock"
+  },
+  "table": {
+    "actions": "Actions",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "name": "Name",
+    "description": "Description",
+    "userId": "User ID",
+    "categories": "Categories"
+
+  },
+    "posDashboard": {
+        "title": "Point of Sale",
+        "totalSales": "Total Sales",
+        "totalOrders": "Total Orders",
+        "ordersInHold": "Orders in Hold",
+        "quickAccessProducts": "Quick Access Products"
+    },
+  "languages": {
+    "en": "English",
+    "ar": "العربية"
+  }
+}

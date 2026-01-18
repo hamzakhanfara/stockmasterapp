@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+  VENDOR_VIEW_ONLY
+}
+
+enum ShelfStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum OrderStatus {
+  DRAFT
+  CONFIRMED
+  CANCELLED
+  WAITING
+}
+
+////////////////////
+/// USER (lié à Clerk)
+////////////////////
+
+model User {
+  id           String   @id @default(uuid())
+  clerkUserId  String   @unique
+  email        String
+  role         UserRole @default(STAFF)
+
+  vendors      Vendor[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders Order[]
+}
+
+////////////////////
+/// VENDOR (client du magasin)
+////////////////////
+
+model Vendor {
+  id        String   @id @default(uuid())
+  name      String
+  description String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  shelves   Shelf[]
+  products  Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+////////////////////
+/// SHELF (étagère / mini-store)
+////////////////////
+
+model Shelf {
+  id        String      @id @default(uuid())
+  name      String
+  status    ShelfStatus @default(ACTIVE)
+
+  vendorId  String
+  vendor    Vendor      @relation(fields: [vendorId], references: [id])
+
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+////////////////////
+/// PRODUCT
+////////////////////
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int
+  lowStockAt  Int      @default(5)
+  barcode     String?   @unique
+
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id])
+
+  orderItems  OrderItem[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+////////////////////
+/// ORDER (facture sans paiement)
+////////////////////
+
+model Order {
+  id           String       @id @default(uuid())
+  orderNumber  String       @unique
+  status       OrderStatus  @default(DRAFT)
+  customerName String?
+
+  totalAmount  Decimal      @db.Decimal(10, 2)
+
+  userId       String
+  user         User         @relation(fields: [userId], references: [id])
+
+  items        OrderItem[]
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+////////////////////
+/// ORDER ITEM
+////////////////////
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  unitPrice Decimal  @db.Decimal(10, 2)
+  total     Decimal  @db.Decimal(10, 2)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+}

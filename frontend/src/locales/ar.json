@@ -1,0 +1,94 @@
+{
+  "navbar": {
+    "title": "رفوف المتجر",
+    "search": "البحث عن المنتجات والرفوف...",
+    "createOrder": "إنشاء طلب",
+    "language": "اللغة"
+  },
+  "sidebar": {
+    "dashboard": "لوحة التحكم",
+    "vendors": "الموردون",
+    "shelves": "الرفوف",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "users": "المستخدمون"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "totalVendors": "إجمالي الموردين",
+    "totalShelves": "إجمالي الرفوف",
+    "totalProducts": "إجمالي المنتجات",
+    "recentOrders": "الطلبات الأخيرة",
+    "salesTrend": "اتجاه المبيعات",
+    "stockStatus": "حالة المخزون"
+  },
+  "vendor":{
+    "addVendor": "إضافة مورد",
+    "addNewVendor": "إضافة مورد جديد",
+    "editVendor": "تعديل المورد",
+    "vendorName": "اسم المورد",
+    "vendorDescription": "وصف المورد",
+    "vendorCreated": "تم إنشاء المورد بنجاح",
+    "vendorUpdated": "تم تحديث المورد بنجاح",
+    "vendorDeleted": "تم حذف المورد بنجاح",
+    "confirmDelete": "هل أنت متأكد من حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+  "product": {
+    "addProduct": "إضافة منتج",
+    "addNewProduct": "إضافة منتج جديد",
+    "editProduct": "تعديل المنتج",
+    "productName": "اسم المنتج",
+    "productDescription": "وصف المنتج",
+    "productPrice": "سعر المنتج",
+    "productStock": "مخزون المنتج",
+    "productCreated": "تم إنشاء المنتج بنجاح",
+    "productUpdated": "تم تحديث المنتج بنجاح",
+    "productDeleted": "تم حذف المنتج بنجاح",
+    "confirmDelete": "هل أنت متأكد من حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء.",
+    "productsList": "قائمة المنتجات",
+    "topSellingProducts": "أفضل المنتجات مبيعًا",
+    "status": {
+        "available": "متوفر",
+        "lowStock": "مخزون منخفض",
+        "outOfStock": "نفد المخزون"
+    }
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "add": "إضافة",
+    "settings": "الإعدادات",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "noData": "لا توجد بيانات",
+    "create": "إنشاء",
+    "price": "السعر",
+    "stock": "المخزون",
+    "initialStock": "المخزون الأولي",
+    "lowStockAt": "المخزون منخفض عند",
+    "outOfStock": "نفد المخزون"
+  },
+    "table": {
+        "actions": "الإجراءات",
+        "createdAt": "تاريخ الإنشاء",
+        "updatedAt": "تاريخ التحديث",
+        "name": "الاسم",
+        "description": "الوصف",
+        "userId": "معرف المستخدم",
+        "categories": "الفئات"
+    },
+    "posDashboard": {
+        "title": "نقطة البيع",
+        "totalSales": "إجمالي المبيعات",
+        "totalOrders": "إجمالي الطلبات",
+        "ordersInHold": "الطلبات المعلقة",
+        "quickAccessProducts": "منتجات الوصول السريع"
+    },
+  "languages": {
+    "en": "English",
+    "ar": "العربية"
+  }
+}
