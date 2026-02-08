@@ -49,7 +49,7 @@ app.use('/api/v1/shelves', shelfRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/orders', orderPdfRoutes);
-
+console.log('Registered routes:');
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
