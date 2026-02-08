@@ -11,9 +11,5 @@
       "src": "/(.*)",
       "dest": "src/index.ts"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "CLERK_SECRET_KEY": "@clerk_secret_key"
-  }
+  ]
 }
