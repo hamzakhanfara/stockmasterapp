@@ -123,14 +123,6 @@ export const Products = observer(() => {
 				<Typography variant="h4" sx={{ fontWeight: 'bold' }}>
 					{t('sidebar.products') || 'Products'}
 				</Typography>
-				<Button
-					variant="contained"
-					startIcon={<AddIcon />}
-					onClick={handleCreateClick}
-					sx={{ bgcolor: '#1976d2', color: '#fff' }}
-				>
-					{t('product.addProduct') || 'Ajouter'}
-				</Button>
 			</Box>
 
 

@@ -30,6 +30,7 @@ enum OrderStatus {
   WAITING
 }
 
+
 ////////////////////
 /// USER (lié à Clerk)
 ////////////////////
@@ -56,6 +57,10 @@ model Vendor {
   id        String   @id @default(uuid())
   name      String
   description String?
+  category   String?
+  contactName  String?
+  contactNumber String?
+  contactEmail  String?
   userId    String
   user      User     @relation(fields: [userId], references: [id])
 
@@ -95,6 +100,7 @@ model Product {
   stock       Int
   lowStockAt  Int      @default(5)
   barcode     String?   @unique
+  category    String?
 
   vendorId    String
   vendor      Vendor   @relation(fields: [vendorId], references: [id])

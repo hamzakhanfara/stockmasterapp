@@ -31,7 +31,6 @@ const COLLAPSED_WIDTH = 80;
 const navItems = [
   { label: 'Dashboard', labelKey: 'sidebar.dashboard', icon: <DashboardIcon />, path: '/' },
   { label: 'Vendors', labelKey: 'sidebar.vendors', icon: <StoreIcon />, path: '/vendors' },
-  { label: 'Shelves', labelKey: 'sidebar.shelves', icon: <InventoryIcon />, path: '/shelves' },
   { label: 'Products', labelKey: 'sidebar.products', icon: <ShoppingCartIcon />, path: '/products' },
   { label: 'Orders', labelKey: 'sidebar.orders', icon: <ShoppingCartIcon />, path: '/orders' },
 ];

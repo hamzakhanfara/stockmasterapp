@@ -17,6 +17,8 @@ import {
   TablePagination,
 } from '@mui/material';
 import { MoreVert as MoreVertIcon, Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
+import Avatar from '@mui/material/Avatar';
+import Chip from '@mui/material/Chip';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { STATE } from '../../constants';
@@ -87,24 +89,84 @@ export const VendorsTable = observer(({ vendors, loading, error, onEdit, onDelet
 
   const columns = [
     {
-      field: 'name',
-      headerName: t('table.name') || 'Nom',
+      field: 'vendor',
+      headerName: t('vendorMgmt.vendor') || 'Vendor',
+      flex: 1.2,
+      minWidth: 220,
+      sortable: true,
+      valueGetter: (params) => params?.row?.name ?? '',
+      renderCell: (params) => {
+        const name = params.row.name || 'N/A';
+        const initials = name.split(' ').map(s => s[0]).join('').slice(0,2).toUpperCase();
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Avatar sx={{ width: 32, height: 32 }}>{initials}</Avatar>
+            <Box>
+              <Link to={`/vendors/${params.row.id}`} style={{ color: '#1976d2', textDecoration: 'none', fontWeight: 600 }}>{name}</Link>
+              <Typography variant="caption" color="text.secondary">{params.row.id}</Typography>
+            </Box>
+          </Box>
+        );
+      },
+    },
+    {
+      field: 'contact',
+      headerName: t('vendorMgmt.contactPerson') || 'Contact Person',
       flex: 1,
-      minWidth: 120,
+      minWidth: 180,
+      valueGetter: (params) => params?.row?.userId ?? '',
       renderCell: (params) => (
-        <Link to={`/vendors/${params.row.id}`} style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}>
-          {params.value || 'N/A'}
-        </Link>
+        <Typography variant="body2" color="text.secondary">{params?.value ? String(params.value).slice(0,8) + '...' : '-'}</Typography>
       ),
     },
-    { field: 'description', headerName: t('table.description') || 'Description', flex: 1, minWidth: 150 },
-    { field: 'createdAt', headerName: t('table.createdAt') || 'Créé le', flex: 0.7, minWidth: 110, valueGetter: (params) => params.value ? new Date(params.value).toLocaleDateString() : 'N/A' },
-    { field: 'updatedAt', headerName: t('table.updatedAt') || 'Modifié le', flex: 0.7, minWidth: 110, valueGetter: (params) => params.value ? new Date(params.value).toLocaleDateString() : 'N/A' },
+    {
+      field: 'category',
+      headerName: t('vendor.category') || 'Category',
+      flex: 0.8,
+      minWidth: 160,
+      sortable: false,
+      renderCell: (params) => {
+        const cat = params.row.category || '';
+        const labelMap = {
+          ELECTRONICS: t('categories.electronics') || 'Electronics',
+          FURNITURE: t('categories.furniture') || 'Furniture',
+          ACCESSORIES: t('categories.accessories') || 'Accessories',
+          FOOD_DRINK: t('categories.foodAndDrink') || 'Food & Drink',
+          OTHER: t('categories.other') || 'Other',
+        };
+        const label = labelMap[cat] || '-';
+        const color = cat === 'OTHER' ? 'default' : 'info';
+        return <Chip size="small" label={label} color={color} variant="outlined" />;
+      },
+    },
+    {
+      field: 'updatedAt',
+      headerName: t('vendorMgmt.lastOrder') || 'Last Order',
+      flex: 0.9,
+      minWidth: 140,
+      valueGetter: (params) => {
+        const d = params?.row?.updatedAt ? new Date(params.row.updatedAt) : null;
+        return d ? d.toLocaleDateString() : 'N/A';
+      },
+    },
+    {
+      field: 'status',
+      headerName: t('vendorMgmt.status') || 'Status',
+      flex: 0.6,
+      minWidth: 120,
+      sortable: false,
+      renderCell: (params) => {
+        const updated = params.row.updatedAt ? new Date(params.row.updatedAt) : null;
+        const days = updated ? (Date.now() - updated.getTime()) / (1000*60*60*24) : Infinity;
+        const isActive = days <= 60;
+        return <Chip size="small" label={isActive ? (t('vendorMgmt.active') || 'Active') : (t('vendorMgmt.onHold') || 'On Hold')} color={isActive ? 'success' : 'warning'} variant="outlined" />;
+      },
+    },
     {
       field: 'actions',
       headerName: t('table.actions') || 'Actions',
-      flex: 0.7,
-      minWidth: 120,
+      flex: 0.4,
+      minWidth: 90,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
@@ -123,10 +185,13 @@ export const VendorsTable = observer(({ vendors, loading, error, onEdit, onDelet
         autoHeight
         rows={rows}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10, 25]}
+        pageSize={10}
+        rowsPerPageOptions={[10, 25, 50, 100]}
         disableSelectionOnClick
-        sx={{ border: 0 }}
+        hideFooterSelectedRowCount
+        disableColumnMenu
+        initialState={{ sorting: { sortModel: [{ field: 'updatedAt', sort: 'desc' }] } }}
+        sx={{ border: 0, '& .MuiDataGrid-columnHeaders': { bgcolor: '#fafafa' }, '& .MuiDataGrid-row': { height: 56 } }}
       />
       <Menu
         anchorEl={anchorEl}

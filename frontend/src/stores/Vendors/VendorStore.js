@@ -6,6 +6,7 @@ export default class VendorStore {
   client = null;
   vendorslist = [];
   selectedVendor = null;
+  vendorStats = null;
   
   fetchState = {
     list: STATE.DONE,
@@ -13,6 +14,7 @@ export default class VendorStore {
     get: STATE.DONE,
     update: STATE.DONE,
     delete: STATE.DONE,
+    stats: STATE.DONE,
   }
   
   error = null;
@@ -24,6 +26,7 @@ export default class VendorStore {
       getVendor: flow,
       updateVendor: flow,
       deleteVendor: flow,
+      fetchVendorStats: flow,
     });
     if (client) this.client = client;
     this.setupFlows();
@@ -47,7 +50,7 @@ export default class VendorStore {
       }
     }).bind(this);
 
-    this.createVendor = flow(function* (name, userId, description) {
+    this.createVendor = flow(function* (name, userId, description, extra = {}) {
       if (!this.client) {
         this.error = 'ApiClient not set';
         return;
@@ -55,7 +58,8 @@ export default class VendorStore {
       this.fetchState.create = STATE.PENDING;
       this.error = null;
       try {
-        const newVendor = yield this.client.createVendor(name, userId, description);
+        let newVendor = yield this.client.createVendor(name, userId, description, extra);
+        newVendor = newVendor?.vendor || newVendor;
         this.vendorslist.push(newVendor);
         this.fetchState.create = STATE.DONE;
         return newVendor;
@@ -73,7 +77,8 @@ export default class VendorStore {
       this.fetchState.get = STATE.PENDING;
       this.error = null;
       try {
-        const vendor = yield this.client.getVendor(id);
+        let vendor = yield this.client.getVendor(id);
+        vendor = vendor?.vendor || vendor;
         this.selectedVendor = vendor;
         this.fetchState.get = STATE.DONE;
         return vendor;
@@ -91,7 +96,8 @@ export default class VendorStore {
       this.fetchState.update = STATE.PENDING;
       this.error = null;
       try {
-        const updatedVendor = yield this.client.updateVendor(id, data);
+        let updatedVendor = yield this.client.updateVendor(id, data);
+        updatedVendor = updatedVendor?.vendor || updatedVendor;
         const index = this.vendorslist.findIndex(v => v.id === id);
         if (index !== -1) {
           this.vendorslist[index] = updatedVendor;
@@ -124,6 +130,24 @@ export default class VendorStore {
       } catch (err) {
         this.error = err?.message || String(err);
         this.fetchState.delete = STATE.ERROR;
+      }
+    }).bind(this);
+
+    this.fetchVendorStats = flow(function* (id) {
+      if (!this.client) {
+        this.error = 'ApiClient not set';
+        return;
+      }
+      this.fetchState.stats = STATE.PENDING;
+      this.error = null;
+      try {
+        const result = yield this.client.getVendorStats(id);
+        this.vendorStats = result.stats;
+        this.fetchState.stats = STATE.DONE;
+        return result.stats;
+      } catch (err) {
+        this.error = err?.message || String(err);
+        this.fetchState.stats = STATE.ERROR;
       }
     }).bind(this);
   }

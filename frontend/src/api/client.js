@@ -5,15 +5,34 @@ import { useAuth } from '@clerk/clerk-react';
 const API_BASE_URL = 'http://localhost:4000/api';
 
 export class ApiClient {
-  constructor(token) {
+  constructor(token, getTokenFn) {
     this.token = token || null;
+    this.getTokenFn = getTokenFn;
   }
 
   setToken(token) {
     this.token = token;
   }
 
-  async request(method, path, body) {
+  async ensureFreshToken() {
+    if (this.getTokenFn) {
+      try {
+        const freshToken = await this.getTokenFn({ skipCache: true });
+        if (freshToken) {
+          this.token = freshToken;
+        }
+      } catch (err) {
+        console.warn('[ApiClient] Failed to refresh token:', err);
+      }
+    }
+  }
+
+  async request(method, path, body, isRetry = false) {
+    // Refresh token before each request to ensure it's valid
+    if (!isRetry) {
+      await this.ensureFreshToken();
+    }
+
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -27,6 +46,13 @@ export class ApiClient {
       headers,
       body: body ? JSON.stringify(body) : undefined,
     });
+
+    // If 401 and not already retrying, refresh token and retry once
+    if (response.status === 401 && !isRetry) {
+      console.log('[ApiClient] 401 detected, refreshing token and retrying...');
+      await this.ensureFreshToken();
+      return this.request(method, path, body, true);
+    }
 
     if (!response.ok) {
       const error = await response.json();
@@ -48,8 +74,8 @@ export class ApiClient {
     return this.request('GET', '/users');
   }
 
-  async createVendor(name, userId, description) {
-    return this.request('POST', '/v1/vendors', { name, userId, description });
+  async createVendor(name, userId, description, extra = {}) {
+    return this.request('POST', '/v1/vendors', { name, userId, description, ...extra });
   }
 
   async listVendors() {
@@ -61,12 +87,16 @@ export class ApiClient {
   }
 
   async updateVendor(id, data) {
-    // data peut contenir name, description, etc.
+    // data may include name, description, category, contactName, contactNumber, contactEmail
     return this.request('PUT', `/v1/vendors/${id}`, data);
   }
 
   async deleteVendor(id) {
     return this.request('DELETE', `/v1/vendors/${id}`);
+  }
+
+  async getVendorStats(id) {
+    return this.request('GET', `/v1/vendors/${id}/stats`);
   }
 
   async createShelf(name, vendorId, status) {
@@ -120,16 +150,31 @@ export class ApiClient {
     return this.request('PATCH', `/v1/products/${id}/stock`, { delta });
   }
 
-  async listOrders() {
-    return this.request('GET', '/v1/orders');
+  async listOrders(params) {
+    const query = new URLSearchParams();
+    if (params?.status) query.append('status', params.status);
+    const qs = query.toString();
+    return this.request('GET', `/v1/orders${qs ? '?' + qs : ''}`);
+  }
+
+  async listDraftOrders() {
+    return this.request('GET', '/v1/orders/draft');
   }
 
   async getOrder(id) {
     return this.request('GET', `/v1/orders/${id}`);
   }
 
+  async getOrderStats() {
+    return this.request('GET', '/v1/orders/stats');
+  }
+
   async createOrder(data) {
     return this.request('POST', '/v1/orders', data);
+  }
+
+  async createOrderDraft(data) {
+    return this.request('POST', '/v1/orders/draft', data);
   }
 
   async updateOrder(id, data) {
@@ -141,6 +186,8 @@ export class ApiClient {
   }
 
   async downloadOrderPdf(id) {
+    await this.ensureFreshToken();
+    
     const headers = {};
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
@@ -162,6 +209,6 @@ export const useApiClient = () => {
 
   return async () => {
     const token = await getToken();
-    return new ApiClient(token || '');
+    return new ApiClient(token || '', getToken);
   };
 };

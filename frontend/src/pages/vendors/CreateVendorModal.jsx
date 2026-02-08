@@ -8,6 +8,11 @@ import {
   Button,
   CircularProgress,
   Alert,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { STATE } from '../../constants';
@@ -17,6 +22,10 @@ export const CreateVendorModal = ({ open, onClose, onConfirm, loading, error }) 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
+    category: 'OTHER',
+    contactName: '',
+    contactNumber: '',
+    contactEmail: '',
   });
 
   const handleChange = (e) => {
@@ -30,7 +39,7 @@ export const CreateVendorModal = ({ open, onClose, onConfirm, loading, error }) 
   const handleConfirm = async () => {
     if (formData.name.trim()) {
       await onConfirm(formData);
-      setFormData({ name: '', description: '' });
+      setFormData({ name: '', description: '', category: 'OTHER', contactName: '', contactNumber: '', contactEmail: '' });
     }
   };
 
@@ -50,28 +59,68 @@ export const CreateVendorModal = ({ open, onClose, onConfirm, loading, error }) 
             {error}
           </Alert>
         )}
-        <TextField
-          fullWidth
-          label={t('vendor.vendorName') || 'Vendor Name'}
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          disabled={isLoading}
-          placeholder="Ex: Vendor ABC"
-          autoFocus
-        />
-        <TextField
-          fullWidth
-          label={t('vendor.vendorDescription') || 'Description (optional)'}
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          disabled={isLoading}
-          placeholder="Ex: Store Bio products supplier"
-          multiline
-          minRows={2}
-          sx={{ mt: 2 }}
-        />
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+          <TextField
+            label={t('vendor.vendorName') || 'Vendor Name'}
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            disabled={isLoading}
+            autoFocus
+          />
+          <FormControl>
+            <InputLabel id="vendor-category-select-label">{t('vendor.category') || 'Category'}</InputLabel>
+            <Select
+              labelId="vendor-category-select-label"
+              id="vendor-category-select"
+              name="category"
+              value={formData.category}
+              label={t('vendor.category') || 'Category'}
+              onChange={handleChange}
+              disabled={isLoading}
+            >
+              <MenuItem value="ELECTRONICS">{t('categories.electronics') || 'Electronics'}</MenuItem>
+              <MenuItem value="FURNITURE">{t('categories.furniture') || 'Furniture'}</MenuItem>
+              <MenuItem value="ACCESSORIES">{t('categories.accessories') || 'Accessories'}</MenuItem>
+              <MenuItem value="FOOD_DRINK">{t('categories.foodAndDrink') || 'Food & Drink'}</MenuItem>
+              <MenuItem value="OTHER">{t('categories.other') || 'Other'}</MenuItem>
+            </Select>
+          </FormControl>
+          <Box sx={{ gridColumn: '1 / -1' }}>
+            <TextField
+              fullWidth
+              label={t('vendor.vendorDescription') || 'Description (optional)'}
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              disabled={isLoading}
+              multiline
+              minRows={2}
+            />
+          </Box>
+          <TextField
+            label={t('vendor.contactName') || 'Contact Name'}
+            name="contactName"
+            value={formData.contactName}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+          <TextField
+            label={t('vendor.contactNumber') || 'Contact Number'}
+            name="contactNumber"
+            value={formData.contactNumber}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+          <TextField
+            label={t('vendor.contactEmail') || 'Contact Email'}
+            name="contactEmail"
+            value={formData.contactEmail}
+            onChange={handleChange}
+            disabled={isLoading}
+            type="email"
+          />
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} disabled={isLoading}>

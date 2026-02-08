@@ -1,6 +1,6 @@
 {
   "navbar": {
-    "title": "K-Moni",
+    "title": "StockMaster",
     "search": "Search products, shelves...",
     "createOrder": "Create Order",
     "language": "Language"
@@ -15,12 +15,25 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "overviewTitle": "Stock Management Overview",
+    "noLowStock": "No low stock items",
+    "noTopSelling": "No top selling products",
+    "welcome": "Welcome back, here's what's happening today.",
     "totalVendors": "Total Vendors",
     "totalShelves": "Total Shelves",
     "totalProducts": "Total Products",
     "recentOrders": "Recent Orders",
     "salesTrend": "Sales Trend",
-    "stockStatus": "Stock Status"
+    "stockStatus": "Stock Status",
+    "totalStockValue": "Total Stock Value",
+    "lowStockAlerts": "Low Stock Alerts",
+    "todaysSales": "Today's Sales",
+    "weeklyRevenue": "Weekly Revenue",
+    "recentSales": "Recent Sales",
+    "viewAllSales": "View All Sales",
+    "lowStockInventory": "Low Stock Inventory",
+    "restock": "Restock",
+    "topSellingProducts": "Top Selling Products"
   },
   "vendor":{
     "addVendor": "Add Vendor",
@@ -31,11 +44,54 @@
     "vendorCreated": "Vendor created successfully",
     "vendorUpdated": "Vendor updated successfully",
     "vendorDeleted": "Vendor deleted successfully",
-    "confirmDelete": "Are you sure you want to delete this vendor? This action cannot be undone."
+    "confirmDelete": "Are you sure you want to delete this vendor? This action cannot be undone.",
+    "contactName": "Contact Name",
+    "contactNumber": "Contact Number",
+    "contactEmail": "Contact Email",
+    "title": "Vendor Details",
+    "vendorWelcome": "Manage vendor information and products",
+    "info": "Vendor Information",
+    "description": "Description",
+    "category": "Category",
+    "contactInfo": "Contact Information",
+    "recentOrders": "Recent Orders",
+    "orders": "orders",
+    "noOrders": "No orders found for this vendor",
+    "viewAllOrders": "View All Orders",
+    "vendorWelcome": "Manage vendor information and products",
+    "welcome": "Manage your suppliers, contact Info and track order history",
+    "title": "Vendor Management"
+  },
+  "vendorMgmt": {
+    "totalVendors": "Total Vendors",
+    "thisMonth": "+ this month",
+    "activeOrders": "Active Orders",
+    "pendingShipments": "Pending Shipments",
+    "filterAllVendors": "All Vendors",
+    "preferred": "Preferred",
+    "category": "Category",
+    "status": "Status",
+    "active": "Active",
+    "onHold": "On Hold",
+    "hardware": "Hardware",
+    "officeSupplies": "Office Supplies",
+    "shipping": "Shipping",
+    "storage": "Storage",
+    "vendor": "Vendor",
+    "contactPerson": "Contact Person",
+    "lastOrder": "Last Order",
+    "sortBy": "Sort by",
+    "recentlyActive": "Recently Active"
+  },
+  "vendorFields": {
+    "contactName": "Contact Name",
+    "contactNumber": "Contact Number",
+    "contactEmail": "Contact Email"
   },
   "product": {
     "addProduct": "Add Product",
     "addNewProduct": "Add New Product",
+    "addStock": "Add Stock",
     "editProduct": "Edit Product",
     "productName": "Product Name",
     "productDescription": "Product Description",
@@ -47,11 +103,20 @@
     "confirmDelete": "Are you sure you want to delete this product? This action cannot be undone.",
     "productsList": "Products List",
     "topSellingProducts": "Top Selling Products",
+    "skuCode": "SKU Code",
+    "category": "Category",
         "status": {
         "available": "Available",
         "lowStock": "Low Stock",
         "outOfStock": "Out of Stock"
     }
+  },
+  "categories": {
+    "electronics": "Electronics",
+    "furniture": "Furniture",
+    "accessories": "Accessories",
+    "foodAndDrink": "Food & Drink",
+    "other": "Other"
   },
   "common": {
     "save": "Save",
@@ -69,7 +134,9 @@
     "stock": "Stock",
     "initialStock": "Initial Stock",
     "lowStockAt": "Low Stock At",
-    "outOfStock": "Out of Stock"
+    "outOfStock": "Out of Stock",
+    "na": "N/A",
+    "all": "All"
   },
   "table": {
     "actions": "Actions",
@@ -81,6 +148,42 @@
     "categories": "Categories"
 
   },
+  "orders": {
+    "orderNumber": "Order Number",
+    "status": "Status",
+    "totalAmount": "Total Amount",
+    "items": "Items",
+    "view": "View",
+    "printPdf": "Print PDF",
+    "createNew": "Create New Order",
+    "history": "Orders History",
+    "details": {
+      "title": "Order {{number}}",
+      "customer": "Customer",
+      "status": "Status",
+      "timestamp": "Timestamp",
+      "vendorStaff": "Vendor/Staff",
+      "payment": "Payment",
+      "itemizedList": "Itemized List",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "discount": "Discount",
+      "totalAmount": "Total Amount",
+      "printReceipt": "Print Receipt"
+    },
+    "stats": {
+      "totalOrders": "Total Orders",
+      "totalRevenue": "Total Revenue",
+      "waiting": "Waiting",
+      "activeOrders": "Active Orders",
+      "pendingShipments": "Pending Shipments",
+      "delayed": "delayed",
+      "totalValue": "Total value",
+      "confirmed": "Confirmed",
+      "draft": "Draft",
+      "thisMonth": "This Month"
+    }
+  },
     "posDashboard": {
         "title": "Point of Sale",
         "totalSales": "Total Sales",
@@ -91,5 +194,42 @@
   "languages": {
     "en": "English",
     "ar": "العربية"
+  }
+  ,
+  "pos": {
+    "allProducts": "All Products",
+    "electronics": "Electronics",
+    "furniture": "Furniture",
+    "accessories": "Accessories",
+    "foodAndDrink": "Food & Drink",
+    "search": "Search",
+    "noImage": "No Image",
+    "addToCart": "Add to cart",
+    "currentCart": "Current Cart",
+    "emptyCart": "Empty Cart",
+    "noItems": "No items",
+    "pricePerUnit": "Price",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total",
+    "parkSale": "Park Sale",
+    "discount": "Discount",
+    "checkout": "Checkout",
+    "scanBarcode": "Scan barcode",
+    "toastAdded": "Item added",
+    "toastIncremented": "Quantity incremented",
+    "toastNotFound": "Barcode not found",
+    "inStock": "STOCK",
+    "limited": "LIMITED",
+    "stock": "Stock",
+    "orderNumber": "Order Number",
+    "items": "Items",
+    "resume": "Resume",
+    "perPage": "Per page",
+    "parkedSalesPending": "Parked Sales (Pending)",
+    "orderId": "Order ID",
+    "timeParked": "Time Parked",
+    "totalAmount": "Total Amount",
+    "ago": "ago"
   }
 }

@@ -16,6 +16,7 @@ import CreateProductModal from '../../products/CreateProductModal';
 import EditProductModal from '../../products/EditProductModal';
 import DeleteProductConfirmModal from '../../products/DeleteProductConfirmModal';
 import AddStockModal from '../../products/AddStockModal';
+import { formatCurrency } from '../../../utils/currency';
 
 
 const ProductsTable = observer(({
@@ -126,7 +127,11 @@ const ProductsTable = observer(({
   const columns = [
     { field: 'name', headerName: t('product.productName') || 'Nom', flex: 1, minWidth: 120 },
     { field: 'description', headerName: t('product.productDescription') || 'Description', flex: 1, minWidth: 150 },
-    { field: 'price', headerName: t('common.price') || 'Prix', flex: 0.5, minWidth: 80, type: 'number' },
+    { field: 'price', headerName: t('common.price') || 'Prix', flex: 0.5, minWidth: 120, type: 'number',
+      renderCell: (params) => (
+        <Typography variant="body2">{formatCurrency(params.value)}</Typography>
+      )
+    },
     {
       field: 'stock',
       headerName: t('common.stock') || 'Stock',
@@ -203,12 +208,12 @@ const ProductsTable = observer(({
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
         <Typography variant="h6">{t('product.productsList') || 'Products List'}</Typography>
         <Button
-          variant="outlined"
-          startIcon={<AddIcon />}
-          sx={{ color: '#1976d2', minWidth: 180, height: 46, fontSize: 16 }}
+          variant="contained"
+          startIcon={<AddIcon sx={{ color: '#fff' }} />}
+          sx={{ color: '#1976d2', textTransform: 'none', minWidth: 180, height: 46, fontSize: 16 }}
           onClick={() => setProductModalOpen(true)}
         >
-          {t('product.addProduct') || 'add Product'}
+          <Typography sx={{ color: '#fff', textTransform: 'lowercase' }}>{t('product.addProduct') || 'add Product'}</Typography>
         </Button>
       </Stack>
       {hasIdError && (

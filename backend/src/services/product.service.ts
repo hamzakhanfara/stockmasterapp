@@ -9,6 +9,7 @@ export async function createProduct(data: {
   lowStockAt?: number;
   vendorId: string;
   barcode?: string;
+  category?: string;
 }): Promise<Product> {
   return prisma.product.create({ data });
 }
@@ -45,6 +46,7 @@ export async function updateProduct(
     stock: number;
     lowStockAt: number;
     vendorId: string;
+    category: string;
   }>
 ) {
   console.log('[service:updateProduct] id:', id, 'data:', data);

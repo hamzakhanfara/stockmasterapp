@@ -21,7 +21,7 @@ export const Layout = observer(({ children }) => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          // p: { xs: 2, md: 3 },
           pt: 10,
           width: { xs: '100%', md: `calc(100% - ${drawerWidth}px)` },
         }}

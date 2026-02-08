@@ -15,7 +15,7 @@ function getVendorId(req: any) {
 // Create product (Admin or own Vendor)
 router.post('/', authMiddleware, async (req: any, res) => {
   try {
-    const { name, description, price, stock, lowStockAt, vendorId, barcode } = req.body;
+    const { name, description, price, stock, lowStockAt, vendorId, barcode, category } = req.body;
     if (!name || !price || stock === undefined || !vendorId) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
@@ -33,6 +33,7 @@ router.post('/', authMiddleware, async (req: any, res) => {
       lowStockAt: lowStockAt !== undefined ? parseInt(lowStockAt) : 5,
       vendorId,
       barcode,
+      category,
     });
     return res.status(201).json({ success: true, product });
   } catch (err) {
@@ -93,7 +94,7 @@ router.put('/:id', authMiddleware, async (req: any, res) => {
       return res.status(403).json({ success: false, message: 'Forbidden' });
     }
 
-    const { name, description, price, stock, lowStockAt, vendorId } = req.body;
+    const { name, description, price, stock, lowStockAt, vendorId, category } = req.body;
     const updateData: any = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
@@ -101,6 +102,7 @@ router.put('/:id', authMiddleware, async (req: any, res) => {
     if (stock !== undefined) updateData.stock = parseInt(stock);
     if (lowStockAt !== undefined) updateData.lowStockAt = parseInt(lowStockAt);
     if (vendorId !== undefined) updateData.vendorId = vendorId;
+    if (category !== undefined) updateData.category = category;
     console.log('[PUT /v1/products/:id] updateData:', updateData);
     const updated = await productService.updateProduct(req.params.id, updateData);
     return res.json({ success: true, product: updated });

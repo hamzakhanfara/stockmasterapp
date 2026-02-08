@@ -14,6 +14,7 @@ export default class OrderStore {
     get: STATE.DONE,
     update: STATE.DONE,
     delete: STATE.DONE,
+    stats: STATE.DONE,
   };
 
   error = null;
@@ -21,11 +22,15 @@ export default class OrderStore {
   constructor(client) {
     makeAutoObservable(this, {
       fetchListOrders: flow,
+      fetchListDraftOrders: flow,
       createOrder: flow,
+      parkSale: flow,
+      checkout: flow,
       putOnHold: flow,
       getOrder: flow,
       updateOrder: flow,
       deleteOrder: flow,
+      fetchStats: flow,
     });
     if (client) this.client = client;
     this.setupFlows();
@@ -41,6 +46,23 @@ export default class OrderStore {
       this.error = null;
       try {
         const data = yield this.client.listOrders(params);
+        this.ordersList = data.orders || data;
+        this.fetchState.list = STATE.DONE;
+      } catch (err) {
+        this.error = err?.message || String(err);
+        this.fetchState.list = STATE.ERROR;
+      }
+    }).bind(this);
+
+    this.fetchListDraftOrders = flow(function* () {
+      if (!this.client) {
+        this.error = 'ApiClient not set';
+        return;
+      }
+      this.fetchState.list = STATE.PENDING;
+      this.error = null;
+      try {
+        const data = yield this.client.listDraftOrders();
         this.ordersList = data.orders || data;
         this.fetchState.list = STATE.DONE;
       } catch (err) {
@@ -70,6 +92,59 @@ export default class OrderStore {
         this.ordersList.push(newOrder);
         this.fetchState.create = STATE.DONE;
         return newOrder;
+      } catch (err) {
+        this.error = err?.message || String(err);
+        this.fetchState.create = STATE.ERROR;
+      }
+    }).bind(this);
+
+    // Checkout: create then set status to CONFIRMED
+    this.checkout = flow(function* (orderData) {
+      if (!this.client) {
+        this.error = 'ApiClient not set';
+        return;
+      }
+      this.fetchState.create = STATE.PENDING;
+      this.error = null;
+      try {
+        const items = Array.isArray(orderData?.items) ? orderData.items.map(it => ({
+          productId: it.id,
+          quantity: it.units,
+          price: it.unitPrice,
+        })) : [];
+        const me = yield this.client.getCurrentUser();
+        const userId = me?.user?.id || me?.id;
+        const newOrder = yield this.client.createOrder({ userId, items });
+        const confirmed = yield this.client.updateOrder(newOrder.id, { status: 'CONFIRMED' });
+        this.ordersList.push(confirmed);
+        this.fetchState.create = STATE.DONE;
+        return confirmed;
+      } catch (err) {
+        this.error = err?.message || String(err);
+        this.fetchState.create = STATE.ERROR;
+      }
+    }).bind(this);
+
+    // Park sale: create order in DRAFT status and do not decrement stock
+    this.parkSale = flow(function* (orderData) {
+      if (!this.client) {
+        this.error = 'ApiClient not set';
+        return;
+      }
+      this.fetchState.create = STATE.PENDING;
+      this.error = null;
+      try {
+        const items = Array.isArray(orderData?.items) ? orderData.items.map(it => ({
+          productId: it.id,
+          quantity: it.units,
+          price: it.unitPrice,
+        })) : [];
+        const me = yield this.client.getCurrentUser();
+        const userId = me?.user?.id || me?.id;
+        const draftOrder = yield this.client.createOrderDraft({ userId, items });
+        this.ordersList.push(draftOrder);
+        this.fetchState.create = STATE.DONE;
+        return draftOrder;
       } catch (err) {
         this.error = err?.message || String(err);
         this.fetchState.create = STATE.ERROR;
@@ -183,6 +258,24 @@ export default class OrderStore {
         } catch (err) {
             this.error = err?.message || String(err);
         }
+    }).bind(this);
+
+    this.fetchStats = flow(function* () {
+      if (!this.client) {
+        this.error = 'ApiClient not set';
+        return;
+      }
+      this.fetchState.stats = STATE.PENDING;
+      this.error = null;
+      try {
+        const data = yield this.client.getOrderStats();
+        this.orderStats = data.stats || data;
+        this.fetchState.stats = STATE.DONE;
+        return this.orderStats;
+      } catch (err) {
+        this.error = err?.message || String(err);
+        this.fetchState.stats = STATE.ERROR;
+      }
     }).bind(this);
   }
 

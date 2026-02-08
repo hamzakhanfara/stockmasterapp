@@ -49,7 +49,7 @@ export const Navbar = observer(() => {
   const handleCreateOrder = () => navigate('/pos');
 
   return (
-    <AppBar position="fixed" color="default" sx={{ backgroundColor: '#ffffff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <AppBar position="fixed" color="default" sx={{ backgroundColor: '#ffffff', zIndex: (theme) => theme.zIndex.appBar }}>
       <Toolbar>
         <IconButton
           aria-label="open drawer"
@@ -61,7 +61,11 @@ export const Navbar = observer(() => {
         </IconButton>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1 }}>
-          <Typography variant="h6" sx={{ margin: 0, fontSize: '1.25rem', color: '#111', fontWeight: 600 }}>
+          <Typography
+            variant="h6"
+            onClick={() => navigate('/')}
+            sx={{ margin: 0, fontSize: '1.25rem', color: '#111', fontWeight: 600, cursor: 'pointer' }}
+          >
             {t('navbar.title')}
           </Typography>
 
@@ -78,18 +82,18 @@ export const Navbar = observer(() => {
                 </InputAdornment>
               ),
             }}
-            sx={{ width: 360, backgroundColor: '#f5f5f5', borderRadius: 1 }}
+            sx={{ width: { xs: '100%', sm: 240, md: 360 }, backgroundColor: '#f5f5f5', borderRadius: 1 }}
           />
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
+            variant="contained"
+            startIcon={<AddIcon sx={{ color: '#fff' }} />}
             onClick={handleCreateOrder}
-            sx={{ borderColor: '#1976d2', color: '#1976d2' }}
+            sx={{ color: '#1976d2', textTransform: 'none' }}
           >
-            {t('navbar.createOrder')}
+            <Typography sx={{ color: '#fff', textTransform: 'lowercase' }}>{t('navbar.createOrder')}</Typography>
           </Button>
 
           <IconButton onClick={handleLangClick} sx={{ color: '#1976d2' }}>

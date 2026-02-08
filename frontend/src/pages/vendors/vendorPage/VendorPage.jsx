@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Button, Paper, Stack } from '@mui/material';
+import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useStore } from '../../../context/useStoreHooks';
 import { useTranslation } from 'react-i18next';
@@ -8,11 +8,13 @@ import CreateProductModal from '../../products/CreateProductModal';
 import { useApiClient } from '../../../api/client';
 import ProductsTable from './ProductsTable';
 import VendorStats from './VendorStats';
+import VendorInfo from './VendorInfo';
+import VendorOrders from './VendorOrders';
 
 
 const VendorDetails = () => {
   const { id } = useParams();
-  const { Vendor: vendorStore, Product: productStore } = useStore();
+  const { Vendor: vendorStore, Product: productStore, Order: orderStore } = useStore();
   const getClient = useApiClient();
   const { t } = useTranslation();
   const [vendor, setVendor] = useState(null);
@@ -25,15 +27,17 @@ const VendorDetails = () => {
   // Initialisation du client pour ProductStore si besoin
   useEffect(() => {
     let mounted = true;
-    const initProductStore = async () => {
-      if (!productStore.client) {
-        const client = await getClient();
-        if (mounted) productStore.setClient(client);
+    const initStores = async () => {
+      const client = await getClient();
+      if (mounted) {
+        if (!productStore.client) productStore.setClient(client);
+        if (!vendorStore.client) vendorStore.setClient(client);
+        if (!orderStore.client) orderStore.setClient(client);
       }
     };
-    initProductStore();
+    initStores();
     return () => { mounted = false; };
-  }, [productStore, getClient]);
+  }, [productStore, vendorStore, orderStore, getClient]);
 
   // Récupération du vendor
   useEffect(() => {
@@ -70,10 +74,20 @@ const VendorDetails = () => {
   if (!vendor) return <Box p={3}>Vendor introuvable.</Box>;
 
   return (
-    <Box p={3}>
-      <Box maxWidth={1200} mx="auto">
-        <Stack direction="column" spacing={3}>
-          <VendorStats vendorsName={vendor.name} vendorDescription={vendor.description} />
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', padding: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>{t('vendor.title')}</Typography>
+      <Typography variant="h6" sx={{ color: 'text.secondary', mb: 0.5 }}>{t('vendor.vendorWelcome')}</Typography>
+      <Grid container spacing={2}>
+        <Grid size={12}>
+          <VendorStats vendorId={id} vendorStore={vendorStore} />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <VendorInfo vendor={vendor} />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <VendorOrders vendorId={id} orderStore={orderStore} />
+        </Grid>
+        <Grid size={12}>
           <ProductsTable
             products={products}
             vendorId={id}
@@ -96,9 +110,9 @@ const VendorDetails = () => {
               }
             }}
           />
-        </Stack>
+        </Grid>
+      </Grid>
       </Box>
-    </Box>
   );
 };
 

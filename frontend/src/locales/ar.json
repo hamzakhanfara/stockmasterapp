@@ -1,6 +1,6 @@
 {
   "navbar": {
-    "title": "رفوف المتجر",
+    "title": "StockMaster",
     "search": "البحث عن المنتجات والرفوف...",
     "createOrder": "إنشاء طلب",
     "language": "اللغة"
@@ -15,12 +15,25 @@
   },
   "dashboard": {
     "title": "لوحة التحكم",
+    "noLowStock": "لا توجد عناصر منخفضة المخزون",
+    "noTopSelling": "لا توجد منتجات مباعة بشكل كبير",
+    "overviewTitle": "نظرة عامة على إدارة المخزون",
+    "welcome": "مرحبًا بك، إليك ما يحدث اليوم.",
     "totalVendors": "إجمالي الموردين",
     "totalShelves": "إجمالي الرفوف",
     "totalProducts": "إجمالي المنتجات",
     "recentOrders": "الطلبات الأخيرة",
     "salesTrend": "اتجاه المبيعات",
-    "stockStatus": "حالة المخزون"
+    "stockStatus": "حالة المخزون",
+    "totalStockValue": "قيمة المخزون الإجمالية",
+    "lowStockAlerts": "تنبيهات انخفاض المخزون",
+    "todaysSales": "مبيعات اليوم",
+    "weeklyRevenue": "الإيرادات الأسبوعية",
+    "recentSales": "المبيعات الأخيرة",
+    "viewAllSales": "عرض جميع المبيعات",
+    "lowStockInventory": "المخزون المنخفض",
+    "restock": "إعادة التزويد",
+    "topSellingProducts": "المنتجات الأكثر مبيعًا"
   },
   "vendor":{
     "addVendor": "إضافة مورد",
@@ -31,12 +44,55 @@
     "vendorCreated": "تم إنشاء المورد بنجاح",
     "vendorUpdated": "تم تحديث المورد بنجاح",
     "vendorDeleted": "تم حذف المورد بنجاح",
-    "confirmDelete": "هل أنت متأكد من حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء."
+    "confirmDelete": "هل أنت متأكد من حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.",
+    "contactName": "اسم جهة الاتصال",
+    "contactNumber": "رقم جهة الاتصال",
+    "contactEmail": "البريد الإلكتروني لجهة الاتصال",
+    "title": "تفاصيل المورد",
+    "vendorWelcome": "إدارة معلومات المورد والمنتجات",
+    "info": "معلومات المورد",
+    "description": "الوصف",
+    "category": "الفئة",
+    "contactInfo": "معلومات الاتصال",
+    "recentOrders": "الطلبات الأخيرة",
+    "orders": "طلبات",
+    "noOrders": "لم يتم العثور على طلبات لهذا المورد",
+    "viewAllOrders": "عرض جميع الطلبات",
+    "vendorWelcome": "إدارة معلومات المورد والمنتجات",
+    "welcome": "قم بإدارة مورديك، معلومات الاتصال وتتبع تاريخ الطلبات",
+    "title": "إدارة الموردين"
+  },
+  "vendorMgmt": {
+    "totalVendors": "إجمالي الموردين",
+    "thisMonth": "+ هذا الشهر",
+    "activeOrders": "الطلبات النشطة",
+    "pendingShipments": "الشحنات المعلقة",
+    "filterAllVendors": "كل الموردين",
+    "preferred": "مفضل",
+    "category": "الفئة",
+    "status": "الحالة",
+    "active": "نشط",
+    "onHold": "قيد الانتظار",
+    "hardware": "معدات",
+    "officeSupplies": "مستلزمات مكتبية",
+    "shipping": "شحن",
+    "storage": "تخزين",
+    "vendor": "المورد",
+    "contactPerson": "جهة الاتصال",
+    "lastOrder": "آخر طلب",
+    "sortBy": "الترتيب حسب",
+    "recentlyActive": "النشاط الأخير"
+  },
+  "vendorFields": {
+    "contactName": "اسم جهة الاتصال",
+    "contactNumber": "رقم جهة الاتصال",
+    "contactEmail": "البريد الإلكتروني لجهة الاتصال"
   },
   "product": {
     "addProduct": "إضافة منتج",
     "addNewProduct": "إضافة منتج جديد",
     "editProduct": "تعديل المنتج",
+    "addStock": "إضافة مخزون",
     "productName": "اسم المنتج",
     "productDescription": "وصف المنتج",
     "productPrice": "سعر المنتج",
@@ -47,11 +103,20 @@
     "confirmDelete": "هل أنت متأكد من حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء.",
     "productsList": "قائمة المنتجات",
     "topSellingProducts": "أفضل المنتجات مبيعًا",
+    "skuCode": "رمز SKU",
+    "category": "الفئة",
     "status": {
         "available": "متوفر",
         "lowStock": "مخزون منخفض",
         "outOfStock": "نفد المخزون"
     }
+  },
+  "categories": {
+    "electronics": "إلكترونيات",
+    "furniture": "أثاث",
+    "accessories": "إكسسوارات",
+    "foodAndDrink": "أطعمة ومشروبات",
+    "other": "أخرى"
   },
   "common": {
     "save": "حفظ",
@@ -69,7 +134,9 @@
     "stock": "المخزون",
     "initialStock": "المخزون الأولي",
     "lowStockAt": "المخزون منخفض عند",
-    "outOfStock": "نفد المخزون"
+    "outOfStock": "نفد المخزون",
+    "na": "غير متوفر",
+    "all": "الكل"
   },
     "table": {
         "actions": "الإجراءات",
@@ -79,6 +146,42 @@
         "description": "الوصف",
         "userId": "معرف المستخدم",
         "categories": "الفئات"
+    },
+    "orders": {
+      "orderNumber": "رقم الطلب",
+      "status": "الحالة",
+      "totalAmount": "المبلغ الإجمالي",
+      "items": "العناصر",
+      "view": "عرض",
+      "printPdf": "طباعة PDF",
+      "createNew": "إنشاء طلب جديد",
+      "history": "سجل الطلبات",
+      "details": {
+        "title": "الطلب {{number}}",
+        "customer": "العميل",
+        "status": "الحالة",
+        "timestamp": "الوقت",
+        "vendorStaff": "البائع/الموظف",
+        "payment": "الدفع",
+        "itemizedList": "قائمة العناصر",
+        "subtotal": "الإجمالي الفرعي",
+        "tax": "الضريبة",
+        "discount": "الخصم",
+        "totalAmount": "الإجمالي",
+        "printReceipt": "طباعة الإيصال"
+      },
+      "stats": {
+        "totalOrders": "إجمالي الطلبات",
+        "totalRevenue": "إجمالي الإيرادات",
+        "waiting": "قيد الانتظار",
+        "activeOrders": "الطلبات النشطة",
+        "pendingShipments": "الشحنات المعلقة",
+        "delayed": "متأخر",
+        "totalValue": "القيمة الإجمالية",
+        "confirmed": "مؤكد",
+        "draft": "مسودة",
+        "thisMonth": "هذا الشهر"
+      }
     },
     "posDashboard": {
         "title": "نقطة البيع",
@@ -90,5 +193,42 @@
   "languages": {
     "en": "English",
     "ar": "العربية"
+  }
+  ,
+  "pos": {
+    "allProducts": "كل المنتجات",
+    "electronics": "إلكترونيات",
+    "furniture": "أثاث",
+    "accessories": "إكسسوارات",
+    "foodAndDrink": "أطعمة ومشروبات",
+    "search": "بحث",
+    "noImage": "لا توجد صورة",
+    "addToCart": "إضافة إلى السلة",
+    "currentCart": "السلة الحالية",
+    "emptyCart": "تفريغ السلة",
+    "noItems": "لا توجد عناصر",
+    "pricePerUnit": "السعر",
+    "subtotal": "الإجمالي الفرعي",
+    "tax": "الضريبة",
+    "total": "الإجمالي",
+    "parkSale": "تعليق البيع",
+    "discount": "خصم",
+    "checkout": "الدفع",
+    "scanBarcode": "مسح الرمز الشريطي",
+    "toastAdded": "تم إضافة العنصر",
+    "toastIncremented": "تم زيادة الكمية",
+    "toastNotFound": "الرمز غير موجود",
+    "inStock": "قيد المخزون",
+    "limited": "محدود",
+    "stock": "المخزون",
+    "orderNumber": "رقم الطلب",
+    "items": "العناصر",
+    "resume": "استئناف",
+    "perPage": "لكل صفحة",
+    "parkedSalesPending": "المبيعات المعلقة",
+    "orderId": "معرف الطلب",
+    "timeParked": "وقت التعليق",
+    "totalAmount": "المبلغ الإجمالي",
+    "ago": "منذ"
   }
 }
