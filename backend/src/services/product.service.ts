@@ -1,5 +1,4 @@
 import { prisma } from '../prisma';
-import { Product } from '@prisma/client';
 
 export async function createProduct(data: {
   name: string;
@@ -10,7 +9,7 @@ export async function createProduct(data: {
   vendorId: string;
   barcode?: string;
   category?: string;
-}): Promise<Product> {
+}) {
   return prisma.product.create({ data });
 }
 

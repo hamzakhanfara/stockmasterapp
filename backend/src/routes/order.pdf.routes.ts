@@ -26,7 +26,7 @@ router.get('/:id/pdf', async (req, res) => {
     doc.moveDown();
 
     doc.text('Produits:', { underline: true });
-    order.items.forEach(item => {
+    order.items.forEach((item: any) => {
       doc.text(`- ${item.product.name} x${item.quantity} @ ${item.unitPrice}€ = ${item.total}€`);
     });
     doc.moveDown();

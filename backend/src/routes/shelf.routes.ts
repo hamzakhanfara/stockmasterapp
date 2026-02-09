@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import * as shelfService from '../services/shelf.service';
-import { ShelfStatus } from '@prisma/client';
 
 const router = Router();
 
@@ -29,7 +28,7 @@ router.post('/', authMiddleware, async (req: any, res) => {
     const shelf = await shelfService.createShelf({
       name,
       vendorId,
-      status: status || ShelfStatus.ACTIVE,
+      status: status || 'ACTIVE',
     });
     return res.status(201).json({ success: true, shelf });
   } catch (err) {

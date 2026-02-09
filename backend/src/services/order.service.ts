@@ -1,5 +1,4 @@
 import {prisma} from '../prisma';
-import { Order } from '@prisma/client';
 
 export const listOrders = async (params: Record<string, any>) => {
   return await prisma.order.findMany({
@@ -83,7 +82,7 @@ export const updateOrder = async (id: string, data: Record<string, any>) => {
       include: { items: true },
     }),
     ...(willConfirm
-      ? current.items.map((it) =>
+      ? current.items.map((it: any) =>
           prisma.product.update({
             where: { id: it.productId },
             data: { stock: { decrement: it.quantity } },
@@ -92,7 +91,7 @@ export const updateOrder = async (id: string, data: Record<string, any>) => {
       : [])
   ]);
 
-  return updated as Order;
+  return updated;
 };
 
 export const deleteOrder = async (id: string) => {

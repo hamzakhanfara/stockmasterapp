@@ -6,3 +6,5 @@ export const prisma = new PrismaClient({
     connectionString: process.env.DATABASE_URL!,
   }),
 });
+
+export * from "@prisma/client";

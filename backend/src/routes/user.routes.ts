@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { getAuth } from '@clerk/express';
 import { getCurrentUserHandler, updateUserRole, listUsers } from '../services/user.service';
-import { UserRole } from '@prisma/client';
 
 const router = Router();
 
@@ -29,7 +28,7 @@ router.get('/auth-debug', (req, res) => {
 router.put('/users/role', authMiddleware, async (req: any, res) => {
 	try {
 		const { role } = req.body;
-		if (!role || !Object.values(UserRole).includes(role)) {
+		if (!role || !['ADMIN', 'STAFF', 'VENDOR_VIEW_ONLY'].includes(role)) {
 			return res.status(400).json({ success: false, message: 'Invalid role' });
 		}
 

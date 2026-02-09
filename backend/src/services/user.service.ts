@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { prisma } from '../prisma';
-import { UserRole } from '@prisma/client';
 
 export function getCurrentUser(req: Request) {
   return (req as any).user ?? null;
@@ -15,8 +14,8 @@ export function getCurrentUserHandler(req: Request, res: Response) {
   return res.json({ success: true, user });
 }
 
-export async function updateUserRole(userId: string, role: UserRole) {
-  return prisma.user.update({ where: { id: userId }, data: { role } });
+export async function updateUserRole(userId: string, role: string) {
+  return prisma.user.update({ where: { id: userId }, data: { role: role as any } });
 }
 
 export async function listUsers() {

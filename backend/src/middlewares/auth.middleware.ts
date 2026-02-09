@@ -2,14 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { getAuth } from "@clerk/express";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 import { prisma } from "../prisma";
-import { Prisma } from "@prisma/client";
 
 /**
  * Type Prisma avec vendors inclus (one-to-many)
  */
-type UserWithVendors = Prisma.UserGetPayload<{
-  include: { vendors: true };
-}>;
+type UserWithVendors = any;
 
 interface AuthenticatedRequest extends Request {
   user: UserWithVendors;

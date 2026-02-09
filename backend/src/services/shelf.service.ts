@@ -1,11 +1,6 @@
 import { prisma } from '../prisma';
-import { Shelf, ShelfStatus } from '@prisma/client';
 
-export async function createShelf(data: {
-  name: string;
-  vendorId: string;
-  status?: ShelfStatus;
-}): Promise<Shelf> {
+export async function createShelf(data: any) {
   return prisma.shelf.create({ data });
 }
 
@@ -26,7 +21,7 @@ export async function listShelves(vendorId?: string) {
 
 export async function updateShelf(
   id: string,
-  data: Partial<{ name: string; status: ShelfStatus; vendorId: string }>
+  data: any
 ) {
   return prisma.shelf.update({
     where: { id },
