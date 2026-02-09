@@ -1,7 +1,6 @@
 import { prisma } from '../prisma';
-import { Vendor } from '@prisma/client';
 
-export async function createVendor(data: { name: string; userId: string; description?: string; category?: string; contactName?: string; contactNumber?: string; contactEmail?: string }): Promise<Vendor> {
+export async function createVendor(data: { name: string; userId: string; description?: string; category?: string; contactName?: string; contactNumber?: string; contactEmail?: string }) {
   const vendor = await prisma.vendor.create({ data });
   return vendor;
 }
@@ -59,16 +58,16 @@ export async function getVendorStats(vendorId: string) {
     },
   });
 
-  const totalSales = ordersWithProducts.reduce((sum, order) => {
-    const vendorItemsTotal = order.items.reduce((itemSum, item) => itemSum + Number(item.total || 0), 0);
+  const totalSales = ordersWithProducts.reduce((sum: number, order: any) => {
+    const vendorItemsTotal = order.items.reduce((itemSum: number, item: any) => itemSum + Number(item.total || 0), 0);
     return sum + vendorItemsTotal;
   }, 0);
 
   const totalOrders = ordersWithProducts.length;
 
   // Get total products sold (quantity sum)
-  const productsSold = ordersWithProducts.reduce((sum, order) => {
-    const vendorItemsQty = order.items.reduce((qtySum, item) => qtySum + Number(item.quantity || 0), 0);
+  const productsSold = ordersWithProducts.reduce((sum: number, order: any) => {
+    const vendorItemsQty = order.items.reduce((qtySum: number, item: any) => qtySum + Number(item.quantity || 0), 0);
     return sum + vendorItemsQty;
   }, 0);
 
@@ -105,15 +104,15 @@ export async function getVendorStats(vendorId: string) {
     },
   });
 
-  const yesterdaySales = yesterdayOrders.reduce((sum, order) => {
-    const vendorItemsTotal = order.items.reduce((itemSum, item) => itemSum + Number(item.total || 0), 0);
+  const yesterdaySales = yesterdayOrders.reduce((sum: number, order: any) => {
+    const vendorItemsTotal = order.items.reduce((itemSum: number, item: any) => itemSum + Number(item.total || 0), 0);
     return sum + vendorItemsTotal;
   }, 0);
 
   const yesterdayOrdersCount = yesterdayOrders.length;
 
-  const yesterdayProductsSold = yesterdayOrders.reduce((sum, order) => {
-    const vendorItemsQty = order.items.reduce((qtySum, item) => qtySum + Number(item.quantity || 0), 0);
+  const yesterdayProductsSold = yesterdayOrders.reduce((sum: number, order: any) => {
+    const vendorItemsQty = order.items.reduce((qtySum: number, item: any) => qtySum + Number(item.quantity || 0), 0);
     return sum + vendorItemsQty;
   }, 0);
 
