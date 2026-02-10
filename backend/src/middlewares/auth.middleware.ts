@@ -49,7 +49,7 @@ export async function authMiddleware(
         data: {
           clerkUserId,
           email: primaryEmail,
-          role: "STAFF",
+          role: "ADMIN",
         },
         include: { vendors: true },
       });
