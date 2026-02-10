@@ -36,6 +36,20 @@ export default class OrderStore {
     this.setupFlows();
   }
 
+  reset() {
+    this.ordersList = [];
+    this.selectedOrder = null;
+    this.fetchState = {
+      list: STATE.DONE,
+      create: STATE.DONE,
+      get: STATE.DONE,
+      update: STATE.DONE,
+      delete: STATE.DONE,
+      stats: STATE.DONE,
+    };
+    this.error = null;
+  }
+
   setupFlows() {
     this.fetchListOrders = flow(function* (params) {
       if (!this.client) {

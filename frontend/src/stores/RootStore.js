@@ -29,6 +29,12 @@ export class RootStore {
   toggleSidebarCollapsed() {
     this.sidebarCollapsed = !this.sidebarCollapsed;
   }
+
+  reset() {
+    this.Vendor.reset();
+    this.Product.reset();
+    this.Order.reset();
+  }
 }
 
 export const createRootStore = () => new RootStore();

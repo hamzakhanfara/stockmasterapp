@@ -29,6 +29,19 @@ export default class ProductStore {
     this.setupFlows();
   }
 
+  reset() {
+    this.productsList = [];
+    this.selectedProduct = null;
+    this.fetchState = {
+      list: STATE.DONE,
+      create: STATE.DONE,
+      get: STATE.DONE,
+      update: STATE.DONE,
+      delete: STATE.DONE,
+    };
+    this.error = null;
+  }
+
   setupFlows() {
     this.fetchListProducts = flow(function* (params) {
       if (!this.client) {

@@ -32,6 +32,21 @@ export default class VendorStore {
     this.setupFlows();
   }
 
+  reset() {
+    this.vendorslist = [];
+    this.selectedVendor = null;
+    this.vendorStats = null;
+    this.fetchState = {
+      list: STATE.DONE,
+      create: STATE.DONE,
+      get: STATE.DONE,
+      update: STATE.DONE,
+      delete: STATE.DONE,
+      stats: STATE.DONE,
+    };
+    this.error = null;
+  }
+
   setupFlows() {
     this.fetchListVendors = flow(function* () {
       if (!this.client) {

@@ -27,7 +27,7 @@ async function authMiddleware(req, res, next) {
                 data: {
                     clerkUserId,
                     email: primaryEmail,
-                    role: "STAFF",
+                    role: "ADMIN",
                 },
                 include: { vendors: true },
             });
