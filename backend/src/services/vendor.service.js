@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createVendor = createVendor;
 exports.getVendorById = getVendorById;
 exports.listVendors = listVendors;
+exports.listVendorsByUserId = listVendorsByUserId;
 exports.updateVendor = updateVendor;
 exports.deleteVendor = deleteVendor;
 exports.getVendorStats = getVendorStats;
@@ -16,6 +17,23 @@ async function getVendorById(id) {
 }
 async function listVendors() {
     return prisma_1.prisma.vendor.findMany({
+        select: {
+            id: true,
+            name: true,
+            description: true,
+            category: true,
+            contactName: true,
+            contactNumber: true,
+            contactEmail: true,
+            userId: true,
+            createdAt: true,
+            updatedAt: true,
+        },
+    });
+}
+async function listVendorsByUserId(userId) {
+    return prisma_1.prisma.vendor.findMany({
+        where: { userId },
         select: {
             id: true,
             name: true,

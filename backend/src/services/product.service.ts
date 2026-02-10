@@ -22,10 +22,22 @@ export async function getProductById(id: string) {
 
 export async function listProducts(filters?: {
   vendorId?: string;
+  vendorIds?: string[];
   lowStockOnly?: boolean;
 }) {
   const where: any = {};
-  if (filters?.vendorId) where.vendorId = filters.vendorId;
+  
+  // If vendorIds array is provided, use it (for multi-tenancy)
+  if (filters?.vendorIds) {
+    // If empty array, return no products
+    if (filters.vendorIds.length === 0) {
+      return [];
+    }
+    where.vendorId = { in: filters.vendorIds };
+  } else if (filters?.vendorId) {
+    where.vendorId = filters.vendorId;
+  }
+  
   if (filters?.lowStockOnly) {
     where.stock = { lte: prisma.product.fields.lowStockAt };
   }

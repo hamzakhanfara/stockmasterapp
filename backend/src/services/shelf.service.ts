@@ -19,6 +19,17 @@ export async function listShelves(vendorId?: string) {
   });
 }
 
+export async function listShelvesByVendorIds(vendorIds: string[]) {
+  return prisma.shelf.findMany({
+    where: {
+      vendorId: {
+        in: vendorIds,
+      },
+    },
+    include: { vendor: true },
+  });
+}
+
 export async function updateShelf(
   id: string,
   data: any

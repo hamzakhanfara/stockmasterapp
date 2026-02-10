@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import * as shelfService from '../services/shelf.service';
+import * as vendorService from '../services/vendor.service';
 
 const router = Router();
 
@@ -12,7 +13,7 @@ function getVendorId(req: any) {
   return req.user?.vendor?.id || null;
 }
 
-// Create shelf (Admin or own Vendor)
+// Create shelf (user must own the vendor)
 router.post('/', authMiddleware, async (req: any, res) => {
   try {
     const { name, vendorId, status } = req.body;
@@ -20,8 +21,10 @@ router.post('/', authMiddleware, async (req: any, res) => {
       return res.status(400).json({ success: false, message: 'Missing name or vendorId' });
     }
 
-    const userVendorId = getVendorId(req);
-    if (!isAdmin(req) && userVendorId !== vendorId) {
+    // Check if vendor belongs to authenticated user
+    const userId = req.user?.id;
+    const vendor = await vendorService.getVendorById(vendorId);
+    if (!vendor || vendor.userId !== userId) {
       return res.status(403).json({ success: false, message: 'Forbidden' });
     }
 
@@ -36,11 +39,18 @@ router.post('/', authMiddleware, async (req: any, res) => {
   }
 });
 
-// List shelves (Admin=all, Vendor=own)
+// List shelves (only user's vendor shelves)
 router.get('/', authMiddleware, async (req: any, res) => {
   try {
-    const vendorId = isAdmin(req) ? undefined : getVendorId(req);
-    const shelves = await shelfService.listShelves(vendorId);
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    
+    // Get user's vendors
+    const userVendors = await vendorService.listVendorsByUserId(userId);
+    const vendorIds = userVendors.map((v: any) => v.id);
+    
+    // Get shelves for user's vendors
+    const shelves = await shelfService.listShelvesByVendorIds(vendorIds);
     return res.json({ success: true, shelves });
   } catch (err) {
     return res.status(500).json({ success: false, error: String(err) });
@@ -53,8 +63,10 @@ router.get('/:id', authMiddleware, async (req: any, res) => {
     const shelf = await shelfService.getShelfById(req.params.id);
     if (!shelf) return res.status(404).json({ success: false, message: 'Not found' });
 
-    const userVendorId = getVendorId(req);
-    if (!isAdmin(req) && shelf.vendorId !== userVendorId) {
+    // Check if shelf's vendor belongs to user
+    const userId = req.user?.id;
+    const vendor = await vendorService.getVendorById(shelf.vendorId);
+    if (!vendor || vendor.userId !== userId) {
       return res.status(403).json({ success: false, message: 'Forbidden' });
     }
 
@@ -70,8 +82,10 @@ router.put('/:id', authMiddleware, async (req: any, res) => {
     const shelf = await shelfService.getShelfById(req.params.id);
     if (!shelf) return res.status(404).json({ success: false, message: 'Not found' });
 
-    const userVendorId = getVendorId(req);
-    if (!isAdmin(req) && shelf.vendorId !== userVendorId) {
+    // Check if shelf's vendor belongs to user
+    const userId = req.user?.id;
+    const vendor = await vendorService.getVendorById(shelf.vendorId);
+    if (!vendor || vendor.userId !== userId) {
       return res.status(403).json({ success: false, message: 'Forbidden' });
     }
 
@@ -83,13 +97,18 @@ router.put('/:id', authMiddleware, async (req: any, res) => {
   }
 });
 
-// Delete shelf (Admin only)
+// Delete shelf
 router.delete('/:id', authMiddleware, async (req: any, res) => {
   try {
-    if (!isAdmin(req)) return res.status(403).json({ success: false, message: 'Forbidden' });
-
     const shelf = await shelfService.getShelfById(req.params.id);
     if (!shelf) return res.status(404).json({ success: false, message: 'Not found' });
+
+    // Check if shelf's vendor belongs to user
+    const userId = req.user?.id;
+    const vendor = await vendorService.getVendorById(shelf.vendorId);
+    if (!vendor || vendor.userId !== userId) {
+      return res.status(403).json({ success: false, message: 'Forbidden' });
+    }
 
     await shelfService.deleteShelf(req.params.id);
     return res.json({ success: true });

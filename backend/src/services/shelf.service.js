@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createShelf = createShelf;
 exports.getShelfById = getShelfById;
 exports.listShelves = listShelves;
+exports.listShelvesByVendorIds = listShelvesByVendorIds;
 exports.updateShelf = updateShelf;
 exports.deleteShelf = deleteShelf;
 const prisma_1 = require("../prisma");
@@ -19,6 +20,16 @@ async function listShelves(vendorId) {
     const where = vendorId ? { vendorId } : {};
     return prisma_1.prisma.shelf.findMany({
         where,
+        include: { vendor: true },
+    });
+}
+async function listShelvesByVendorIds(vendorIds) {
+    return prisma_1.prisma.shelf.findMany({
+        where: {
+            vendorId: {
+                in: vendorIds,
+            },
+        },
         include: { vendor: true },
     });
 }

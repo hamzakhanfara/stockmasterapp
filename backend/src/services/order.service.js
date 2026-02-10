@@ -97,18 +97,20 @@ const deleteOrder = async (id) => {
     return await prisma_1.prisma.order.delete({ where: { id } });
 };
 exports.deleteOrder = deleteOrder;
-const getOrderStats = async () => {
+const getOrderStats = async (userId) => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    // Base filter for user
+    const userFilter = userId ? { userId } : {};
     const [totalOrders, confirmedCount, waitingCount, draftCount, cancelledCount, totalRevenueAgg, revenueThisMonthAgg, ordersThisMonth] = await Promise.all([
-        prisma_1.prisma.order.count(),
-        prisma_1.prisma.order.count({ where: { status: 'CONFIRMED' } }),
-        prisma_1.prisma.order.count({ where: { status: 'WAITING' } }),
-        prisma_1.prisma.order.count({ where: { status: 'DRAFT' } }),
-        prisma_1.prisma.order.count({ where: { status: 'CANCELLED' } }),
-        prisma_1.prisma.order.aggregate({ _sum: { totalAmount: true }, where: { status: 'CONFIRMED' } }),
-        prisma_1.prisma.order.aggregate({ _sum: { totalAmount: true }, where: { status: 'CONFIRMED', createdAt: { gte: startOfMonth } } }),
-        prisma_1.prisma.order.count({ where: { createdAt: { gte: startOfMonth } } }),
+        prisma_1.prisma.order.count({ where: userFilter }),
+        prisma_1.prisma.order.count({ where: { ...userFilter, status: 'CONFIRMED' } }),
+        prisma_1.prisma.order.count({ where: { ...userFilter, status: 'WAITING' } }),
+        prisma_1.prisma.order.count({ where: { ...userFilter, status: 'DRAFT' } }),
+        prisma_1.prisma.order.count({ where: { ...userFilter, status: 'CANCELLED' } }),
+        prisma_1.prisma.order.aggregate({ _sum: { totalAmount: true }, where: { ...userFilter, status: 'CONFIRMED' } }),
+        prisma_1.prisma.order.aggregate({ _sum: { totalAmount: true }, where: { ...userFilter, status: 'CONFIRMED', createdAt: { gte: startOfMonth } } }),
+        prisma_1.prisma.order.count({ where: { ...userFilter, createdAt: { gte: startOfMonth } } }),
     ]);
     return {
         totalOrders,

@@ -36,6 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const shelfService = __importStar(require("../services/shelf.service"));
+const vendorService = __importStar(require("../services/vendor.service"));
 const router = (0, express_1.Router)();
 function isAdmin(req) {
     return req.user?.role === 'ADMIN';
@@ -43,15 +44,17 @@ function isAdmin(req) {
 function getVendorId(req) {
     return req.user?.vendor?.id || null;
 }
-// Create shelf (Admin or own Vendor)
+// Create shelf (user must own the vendor)
 router.post('/', auth_middleware_1.authMiddleware, async (req, res) => {
     try {
         const { name, vendorId, status } = req.body;
         if (!name || !vendorId) {
             return res.status(400).json({ success: false, message: 'Missing name or vendorId' });
         }
-        const userVendorId = getVendorId(req);
-        if (!isAdmin(req) && userVendorId !== vendorId) {
+        // Check if vendor belongs to authenticated user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(vendorId);
+        if (!vendor || vendor.userId !== userId) {
             return res.status(403).json({ success: false, message: 'Forbidden' });
         }
         const shelf = await shelfService.createShelf({
@@ -65,11 +68,17 @@ router.post('/', auth_middleware_1.authMiddleware, async (req, res) => {
         return res.status(500).json({ success: false, error: String(err) });
     }
 });
-// List shelves (Admin=all, Vendor=own)
+// List shelves (only user's vendor shelves)
 router.get('/', auth_middleware_1.authMiddleware, async (req, res) => {
     try {
-        const vendorId = isAdmin(req) ? undefined : getVendorId(req);
-        const shelves = await shelfService.listShelves(vendorId);
+        const userId = req.user?.id;
+        if (!userId)
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        // Get user's vendors
+        const userVendors = await vendorService.listVendorsByUserId(userId);
+        const vendorIds = userVendors.map((v) => v.id);
+        // Get shelves for user's vendors
+        const shelves = await shelfService.listShelvesByVendorIds(vendorIds);
         return res.json({ success: true, shelves });
     }
     catch (err) {
@@ -82,8 +91,10 @@ router.get('/:id', auth_middleware_1.authMiddleware, async (req, res) => {
         const shelf = await shelfService.getShelfById(req.params.id);
         if (!shelf)
             return res.status(404).json({ success: false, message: 'Not found' });
-        const userVendorId = getVendorId(req);
-        if (!isAdmin(req) && shelf.vendorId !== userVendorId) {
+        // Check if shelf's vendor belongs to user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(shelf.vendorId);
+        if (!vendor || vendor.userId !== userId) {
             return res.status(403).json({ success: false, message: 'Forbidden' });
         }
         return res.json({ success: true, shelf });
@@ -98,8 +109,10 @@ router.put('/:id', auth_middleware_1.authMiddleware, async (req, res) => {
         const shelf = await shelfService.getShelfById(req.params.id);
         if (!shelf)
             return res.status(404).json({ success: false, message: 'Not found' });
-        const userVendorId = getVendorId(req);
-        if (!isAdmin(req) && shelf.vendorId !== userVendorId) {
+        // Check if shelf's vendor belongs to user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(shelf.vendorId);
+        if (!vendor || vendor.userId !== userId) {
             return res.status(403).json({ success: false, message: 'Forbidden' });
         }
         const { name, status, vendorId } = req.body;
@@ -110,14 +123,18 @@ router.put('/:id', auth_middleware_1.authMiddleware, async (req, res) => {
         return res.status(500).json({ success: false, error: String(err) });
     }
 });
-// Delete shelf (Admin only)
+// Delete shelf
 router.delete('/:id', auth_middleware_1.authMiddleware, async (req, res) => {
     try {
-        if (!isAdmin(req))
-            return res.status(403).json({ success: false, message: 'Forbidden' });
         const shelf = await shelfService.getShelfById(req.params.id);
         if (!shelf)
             return res.status(404).json({ success: false, message: 'Not found' });
+        // Check if shelf's vendor belongs to user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(shelf.vendorId);
+        if (!vendor || vendor.userId !== userId) {
+            return res.status(403).json({ success: false, message: 'Forbidden' });
+        }
         await shelfService.deleteShelf(req.params.id);
         return res.json({ success: true });
     }

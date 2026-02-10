@@ -42,6 +42,18 @@ export declare function listVendors(): Promise<{
     contactEmail: string | null;
     userId: string;
 }[]>;
+export declare function listVendorsByUserId(userId: string): Promise<{
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    description: string | null;
+    category: string | null;
+    contactName: string | null;
+    contactNumber: string | null;
+    contactEmail: string | null;
+    userId: string;
+}[]>;
 export declare function updateVendor(id: string, data: Partial<{
     name: string;
     userId: string;

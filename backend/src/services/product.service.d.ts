@@ -48,6 +48,7 @@ export declare function getProductById(id: string): Promise<({
 }) | null>;
 export declare function listProducts(filters?: {
     vendorId?: string;
+    vendorIds?: string[];
     lowStockOnly?: boolean;
 }): Promise<({
     vendor: {

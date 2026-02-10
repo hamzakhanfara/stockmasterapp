@@ -26,6 +26,24 @@ export async function listVendors() {
   });
 }
 
+export async function listVendorsByUserId(userId: string) {
+  return prisma.vendor.findMany({
+    where: { userId },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      category: true,
+      contactName: true,
+      contactNumber: true,
+      contactEmail: true,
+      userId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+}
+
 export async function updateVendor(id: string, data: Partial<{ name: string; userId: string; description?: string; category?: string; contactName?: string; contactNumber?: string; contactEmail?: string }>) {
   return prisma.vendor.update({ where: { id }, data });
 }

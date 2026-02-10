@@ -40,14 +40,16 @@ const router = (0, express_1.Router)();
 function isAdmin(req) {
     return req.user?.role === 'ADMIN';
 }
-// Create vendor (admin only)
+// Create vendor (use authenticated user's ID)
 router.post('/', auth_middleware_1.authMiddleware, async (req, res) => {
     try {
-        if (!isAdmin(req))
-            return res.status(403).json({ success: false, message: 'Forbidden' });
-        const { name, userId, description, category, contactName, contactNumber, contactEmail } = req.body;
-        if (!name || !userId)
-            return res.status(400).json({ success: false, message: 'Missing name or userId' });
+        const { name, description, category, contactName, contactNumber, contactEmail } = req.body;
+        if (!name)
+            return res.status(400).json({ success: false, message: 'Missing name' });
+        // Use authenticated user's ID
+        const userId = req.user?.id;
+        if (!userId)
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
         // Basic email validation if provided
         if (contactEmail && typeof contactEmail === 'string') {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,16 +63,15 @@ router.post('/', auth_middleware_1.authMiddleware, async (req, res) => {
         return res.status(500).json({ success: false, error: String(err) });
     }
 });
-// List vendors (admin or vendor own)
+// List vendors (only user's own vendors)
 router.get('/', auth_middleware_1.authMiddleware, async (req, res) => {
     try {
-        if (isAdmin(req)) {
-            const vendors = await vendorService.listVendors();
-            return res.json({ success: true, vendors });
-        }
-        // If vendor user, return their vendor only
-        const myVendor = req.user?.vendor ? [req.user.vendor] : [];
-        return res.json({ success: true, vendors: myVendor });
+        const userId = req.user?.id;
+        if (!userId)
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        // Get only vendors belonging to this user
+        const vendors = await vendorService.listVendorsByUserId(userId);
+        return res.json({ success: true, vendors });
     }
     catch (err) {
         return res.status(500).json({ success: false, error: String(err) });

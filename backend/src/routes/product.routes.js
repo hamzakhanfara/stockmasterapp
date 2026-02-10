@@ -36,6 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const productService = __importStar(require("../services/product.service"));
+const vendorService = __importStar(require("../services/vendor.service"));
 const router = (0, express_1.Router)();
 function isAdmin(req) {
     return req.user?.role === 'ADMIN';
@@ -43,15 +44,17 @@ function isAdmin(req) {
 function getVendorId(req) {
     return req.user?.vendor?.id || null;
 }
-// Create product (Admin or own Vendor)
+// Create product (user must own the vendor)
 router.post('/', auth_middleware_1.authMiddleware, async (req, res) => {
     try {
         const { name, description, price, stock, lowStockAt, vendorId, barcode, category } = req.body;
         if (!name || !price || stock === undefined || !vendorId) {
             return res.status(400).json({ success: false, message: 'Missing required fields' });
         }
-        const userVendorId = getVendorId(req);
-        if (!isAdmin(req) && userVendorId !== vendorId) {
+        // Check if vendor belongs to authenticated user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(vendorId);
+        if (!vendor || vendor.userId !== userId) {
             return res.status(403).json({ success: false, message: 'Forbidden' });
         }
         const product = await productService.createProduct({
@@ -70,21 +73,36 @@ router.post('/', auth_middleware_1.authMiddleware, async (req, res) => {
         return res.status(500).json({ success: false, error: String(err) });
     }
 });
-// List products (Admin=all, Vendor=own, with filters)
+// List products (only user's vendor products)
 router.get('/', auth_middleware_1.authMiddleware, async (req, res) => {
     try {
         const { vendorId, shelfId, lowStockOnly } = req.query;
-        const userVendorId = getVendorId(req);
+        const userId = req.user?.id;
+        if (!userId)
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
         const filters = {};
-        if (isAdmin(req) && vendorId)
+        // Always filter by user's vendors
+        const userVendors = await vendorService.listVendorsByUserId(userId);
+        const userVendorIds = userVendors.map((v) => v.id);
+        console.log('[GET /products] userId:', userId, 'userVendorIds:', userVendorIds);
+        if (vendorId) {
+            // Check if requested vendor belongs to user
+            if (!userVendorIds.includes(vendorId)) {
+                console.log('[GET /products] Forbidden - vendor does not belong to user');
+                return res.status(403).json({ success: false, message: 'Forbidden' });
+            }
             filters.vendorId = vendorId;
-        else if (!isAdmin(req))
-            filters.vendorId = userVendorId;
+        }
+        else {
+            // Return products from all user's vendors
+            filters.vendorIds = userVendorIds;
+        }
         if (shelfId)
             filters.shelfId = shelfId;
         if (lowStockOnly === 'true')
             filters.lowStockOnly = true;
         const products = await productService.listProducts(filters);
+        console.log('[GET /products] Returning', products.length, 'products');
         return res.json({ success: true, products });
     }
     catch (err) {
@@ -97,8 +115,10 @@ router.get('/:id', auth_middleware_1.authMiddleware, async (req, res) => {
         const product = await productService.getProductById(req.params.id);
         if (!product)
             return res.status(404).json({ success: false, message: 'Not found' });
-        const userVendorId = getVendorId(req);
-        if (!isAdmin(req) && product.vendorId !== userVendorId) {
+        // Check if product's vendor belongs to user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(product.vendorId);
+        if (!vendor || vendor.userId !== userId) {
             return res.status(403).json({ success: false, message: 'Forbidden' });
         }
         return res.json({ success: true, product });
@@ -116,9 +136,11 @@ router.put('/:id', auth_middleware_1.authMiddleware, async (req, res) => {
             console.log('[PUT /v1/products/:id] Not found for id:', req.params.id);
             return res.status(404).json({ success: false, message: 'Not found' });
         }
-        const userVendorId = getVendorId(req);
-        if (!isAdmin(req) && product.vendorId !== userVendorId) {
-            console.log('[PUT /v1/products/:id] Forbidden for vendor:', userVendorId);
+        // Check if product's vendor belongs to user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(product.vendorId);
+        if (!vendor || vendor.userId !== userId) {
+            console.log('[PUT /v1/products/:id] Forbidden - vendor does not belong to user');
             return res.status(403).json({ success: false, message: 'Forbidden' });
         }
         const { name, description, price, stock, lowStockAt, vendorId, category } = req.body;
@@ -152,8 +174,10 @@ router.delete('/:id', auth_middleware_1.authMiddleware, async (req, res) => {
         const product = await productService.getProductById(req.params.id);
         if (!product)
             return res.status(404).json({ success: false, message: 'Not found' });
-        const userVendorId = getVendorId(req);
-        if (!isAdmin(req) && product.vendorId !== userVendorId) {
+        // Check if product's vendor belongs to user
+        const userId = req.user?.id;
+        const vendor = await vendorService.getVendorById(product.vendorId);
+        if (!vendor || vendor.userId !== userId) {
             return res.status(403).json({ success: false, message: 'Forbidden' });
         }
         await productService.deleteProduct(req.params.id);

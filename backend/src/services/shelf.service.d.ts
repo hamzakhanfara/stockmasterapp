@@ -48,6 +48,27 @@ export declare function listShelves(vendorId?: string): Promise<({
     status: import(".prisma/client").$Enums.ShelfStatus;
     vendorId: string;
 })[]>;
+export declare function listShelvesByVendorIds(vendorIds: string[]): Promise<({
+    vendor: {
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        category: string | null;
+        contactName: string | null;
+        contactNumber: string | null;
+        contactEmail: string | null;
+        userId: string;
+    };
+} & {
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    status: import(".prisma/client").$Enums.ShelfStatus;
+    vendorId: string;
+})[]>;
 export declare function updateShelf(id: string, data: any): Promise<{
     vendor: {
         name: string;

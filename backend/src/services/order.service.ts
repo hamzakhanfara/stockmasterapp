@@ -100,19 +100,22 @@ export const deleteOrder = async (id: string) => {
   return await prisma.order.delete({ where: { id } });
 };
 
-export const getOrderStats = async () => {
+export const getOrderStats = async (userId?: string) => {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
+  // Base filter for user
+  const userFilter = userId ? { userId } : {};
+
   const [totalOrders, confirmedCount, waitingCount, draftCount, cancelledCount, totalRevenueAgg, revenueThisMonthAgg, ordersThisMonth] = await Promise.all([
-    prisma.order.count(),
-    prisma.order.count({ where: { status: 'CONFIRMED' } }),
-    prisma.order.count({ where: { status: 'WAITING' } }),
-    prisma.order.count({ where: { status: 'DRAFT' } }),
-    prisma.order.count({ where: { status: 'CANCELLED' } }),
-    prisma.order.aggregate({ _sum: { totalAmount: true }, where: { status: 'CONFIRMED' } }),
-    prisma.order.aggregate({ _sum: { totalAmount: true }, where: { status: 'CONFIRMED', createdAt: { gte: startOfMonth } } }),
-    prisma.order.count({ where: { createdAt: { gte: startOfMonth } } }),
+    prisma.order.count({ where: userFilter }),
+    prisma.order.count({ where: { ...userFilter, status: 'CONFIRMED' } }),
+    prisma.order.count({ where: { ...userFilter, status: 'WAITING' } }),
+    prisma.order.count({ where: { ...userFilter, status: 'DRAFT' } }),
+    prisma.order.count({ where: { ...userFilter, status: 'CANCELLED' } }),
+    prisma.order.aggregate({ _sum: { totalAmount: true }, where: { ...userFilter, status: 'CONFIRMED' } }),
+    prisma.order.aggregate({ _sum: { totalAmount: true }, where: { ...userFilter, status: 'CONFIRMED', createdAt: { gte: startOfMonth } } }),
+    prisma.order.count({ where: { ...userFilter, createdAt: { gte: startOfMonth } } }),
   ]);
 
   return {

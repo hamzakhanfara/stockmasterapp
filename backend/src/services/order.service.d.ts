@@ -172,7 +172,7 @@ export declare const deleteOrder: (id: string) => Promise<{
     customerName: string | null;
     totalAmount: import("@prisma/client-runtime-utils").Decimal;
 }>;
-export declare const getOrderStats: () => Promise<{
+export declare const getOrderStats: (userId?: string) => Promise<{
     totalOrders: number;
     confirmedCount: number;
     waitingCount: number;
