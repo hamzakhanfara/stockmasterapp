@@ -48,6 +48,7 @@ const clerkAppearance = {
     formButtonPrimary: 'background-color: #2563eb; border-radius: 0.5rem; text-transform: none; font-weight: 600; padding: 0.75rem 1rem; font-size: 1rem;',
     formFieldInput: 'border-color: #cbd5e1; border-radius: 0.5rem;',
     footerActionLink: 'color: #2563eb; font-weight: 600;',
+    footerAction: 'display: none;',
     identityPreviewText: 'color: #0f172a;',
     identityPreviewEditButton: 'color: #2563eb;',
     socialButtonsBlockButton: 'border-color: #cbd5e1; border-radius: 0.5rem; color: #0f172a;',

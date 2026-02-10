@@ -19,8 +19,12 @@ const SignInPage = () => {
           <SignIn
             routing="path"
             path="/sign-in"
-            signUpUrl="/sign-up"
             redirectUrl="/dashboard"
+            appearance={{
+              elements: {
+                footerAction: { display: 'none' },
+              },
+            }}
           />
         </Box>
       </Container>
