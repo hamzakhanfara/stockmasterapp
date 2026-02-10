@@ -22,7 +22,9 @@ const SignInPage = () => {
             redirectUrl="/dashboard"
             appearance={{
               elements: {
-                footerAction: { display: 'none' },
+                footerAction: { display: 'none !important' },
+                footer: { display: 'none !important' },
+                footerActionLink: { display: 'none !important' },
               },
             }}
           />
